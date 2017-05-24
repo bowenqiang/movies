@@ -11,7 +11,8 @@ class MoviesList extends Component{
             sortOrder:{
                 vote:true,
                 score:true
-            }
+            },
+            like:new Map()
         };
     }
 
@@ -29,6 +30,26 @@ class MoviesList extends Component{
     componentDidUpdate= ()=>{
         console.log('Did update!');
 
+    }
+
+    handleLike = (e) =>{
+        const action = e.target.getAttribute('data-id');
+        const title = e.target.getAttribute('data-title');
+        let like=this.state.like;
+        switch(action){
+            case 'like':
+            like.get(title) === 'like'? like.set(title,'none'): like.set(title,'like');
+            break;
+            case 'dislike':
+            like.get(title) === 'dislike'? like.set(title,'none'):like.set(title,'dislike');
+            break;
+            default:console.log('there is something wrong with like and dislike');
+        }
+        this.setState({
+            like:like
+        });
+        console.log('like');
+        console.log(this.state.like);
     }
 
     handleClick = (e)=>{
@@ -92,7 +113,6 @@ class MoviesList extends Component{
             json:json,
             sortOrder:sortOrder
         });
-
     }
 
     fetchData = (page=1)=>{
@@ -117,8 +137,14 @@ class MoviesList extends Component{
                 <button onClick={this.handleClick} data-id='next'>Next</button>
 
             {
-                this.state.isLoading ? 'Loading...':this.state.json.results.map(movie => {
-                    return <MovieDetail detail={movie}/>;
+                this.state.isLoading ? 'Loading...':this.state.json.results.map((movie,index) => {
+                    const display = this.state.like.get(movie.title) === 'dislike'? 'none': 'inline';
+                    const backgroundColor = this.state.like.get(movie.title) === 'like'?'yellow':'black';
+                    const howStyle={
+                        display:display,
+                        color:backgroundColor
+                    };
+                    return <MovieDetail howStyle={howStyle} detail={movie} id={index} like_dislike={this.handleLike}/>;
                 })
             }
             </div>
