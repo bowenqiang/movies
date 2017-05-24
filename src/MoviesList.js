@@ -1,17 +1,19 @@
 import React, {Component} from 'react';
+import Immutable from 'immutable';
 import 'whatwg-fetch';
 import MovieDetail from './MovieDetail';
+
 
 class MoviesList extends Component{
     constructor(props){
         super(props);
         this.state = {
-            json:null,
+            json:new Immutable.Map(),
             isLoading:true,
-            sortOrder:{
+            sortOrder:Immutable.fromJS({
                 vote:true,
                 score:true
-            },
+            }),
             like:new Map()
         };
     }
@@ -30,6 +32,14 @@ class MoviesList extends Component{
     componentDidUpdate= ()=>{
         console.log('Did update!');
 
+    }
+
+    shouldComponentUpdate = (nextProps,nextState) =>{
+        if(this.state.json !== nextState.json){
+            console.log('should update');
+            return true;
+        }
+        return false;
     }
 
     handleLike = (e) =>{
@@ -67,6 +77,7 @@ class MoviesList extends Component{
     }
 
     handleSort = (e)=>{
+        console.log('handling sort');
         const action = e.target.getAttribute('data-id');
         let json=this.state.json;
         let movies = json.results.slice(0);
@@ -144,12 +155,12 @@ class MoviesList extends Component{
                         display:display,
                         color:backgroundColor
                     };
-                    return <MovieDetail howStyle={howStyle} detail={movie} id={index} like_dislike={this.handleLike}/>;
+                    return <MovieDetail howStyle={howStyle} detail={movie} key={index} like_dislike={this.handleLike}/>;
                 })
             }
             </div>
         )
     }
-}
 
+}
 export default MoviesList;
