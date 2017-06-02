@@ -11,12 +11,12 @@ class MovieDetail extends Component{
         }
     }
 
-    shouldComponentUpdate(nextProps,nextState){
-        if(this.props.like_dislike !==nextProps.like_dislike){
-            return true;
-        }
-        return false;
-    }
+    // shouldComponentUpdate(nextProps,nextState){
+    //     if(this.props.like_dislike !==nextProps.like_dislike){
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     render(){
         PropTypes.checkPropTypes(MovieDetail.propTypes,this.props,'props','MovieDetail');

@@ -8,13 +8,17 @@ class MoviesList extends Component{
     constructor(props){
         super(props);
         this.state = {
-            json:new Immutable.Map(),
+            //json:{},
+            json: Immutable.fromJS({}),
             isLoading:true,
-            sortOrder:Immutable.fromJS({
+            sortOrder:{
                 vote:true,
                 score:true
-            }),
-            like:new Map()
+            },
+            like:new Map(),
+            likeMovies:[],
+            dislikeMovies:[]
+
         };
     }
 
@@ -46,17 +50,23 @@ class MoviesList extends Component{
         const action = e.target.getAttribute('data-id');
         const title = e.target.getAttribute('data-title');
         let like=this.state.like;
+        let likeMovies=this.state.likeMovies;
+        let dislikeMovies=this.state.dislikeMovies;
         switch(action){
             case 'like':
             like.get(title) === 'like'? like.set(title,'none'): like.set(title,'like');
+
             break;
             case 'dislike':
             like.get(title) === 'dislike'? like.set(title,'none'):like.set(title,'dislike');
+
             break;
             default:console.log('there is something wrong with like and dislike');
         }
         this.setState({
-            like:like
+            like:like,
+            likeMovies:likeMovies,
+            dislikeMovies:dislikeMovies
         });
         console.log('like');
         console.log(this.state.like);
@@ -130,8 +140,10 @@ class MoviesList extends Component{
         console.log('fetchData');
         fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=4bef8838c2fd078bd13d7127d8dedcd4&language=en-US?&page=${page}`).then(res => res.json()).then(json =>{
             console.log(json);
+            let newJson = Immutable.fromJS(json); //imuutable
             this.setState({
-                json:json,
+                json:newJson,
+                //immutable
                 isLoading:false
             });
         });
